@@ -1,0 +1,44 @@
+# Virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment variables / secrets
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# VS Code local settings
+.vscode/
+
+# Raw and processed datasets
+data/raw/*
+data/processed/*
+
+# Keep empty data folders trackable later
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Trained model artifacts
+models/*
+!models/.gitkeep
+
+# Generated outputs
+outputs/metrics/*
+outputs/predictions/*
+outputs/anomalies/*
+outputs/figures/*
+
+# Keep output folders trackable later
+!outputs/metrics/.gitkeep
+!outputs/predictions/.gitkeep
+!outputs/anomalies/.gitkeep
+!outputs/figures/.gitkeep
+
+# Logs
+*.log
