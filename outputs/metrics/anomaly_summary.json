@@ -1,0 +1,123 @@
+{
+  "anomaly_count": 78,
+  "anomaly_rate_percent": 0.4294444750316578,
+  "calibration_model": "RandomForestRegressor",
+  "calibration_model_training_scope": "train_only",
+  "drop_count": 56,
+  "final_test_usage": "scoring_only",
+  "method": "absolute_forecast_residual_quantile",
+  "severity_counts": {
+    "high": 1,
+    "moderate": 77
+  },
+  "spike_count": 22,
+  "threshold_fit_on_final_test": false,
+  "threshold_fit_on_training_rows": false,
+  "threshold_mw": 3018.653887984358,
+  "threshold_quantile": 0.99,
+  "threshold_source": "unseen_validation_residuals",
+  "top_anomalies": [
+    {
+      "absolute_residual_mw": 4669.255119205009,
+      "actual_mw": 16607.0,
+      "datetime": "2018-07-20T19:00:00",
+      "direction": "drop",
+      "prediction_mw": 21276.25511920501,
+      "residual_mw": -4669.255119205009,
+      "severity": "high",
+      "severity_score": 1.5468004257761412
+    },
+    {
+      "absolute_residual_mw": 4370.9648123465595,
+      "actual_mw": 19843.0,
+      "datetime": "2017-03-15T07:00:00",
+      "direction": "spike",
+      "prediction_mw": 15472.03518765344,
+      "residual_mw": 4370.9648123465595,
+      "severity": "moderate",
+      "severity_score": 1.4479847556372814
+    },
+    {
+      "absolute_residual_mw": 4329.280857142858,
+      "actual_mw": 16974.0,
+      "datetime": "2018-01-08T04:00:00",
+      "direction": "drop",
+      "prediction_mw": 21303.280857142858,
+      "residual_mw": -4329.280857142858,
+      "severity": "moderate",
+      "severity_score": 1.4341759664383529
+    },
+    {
+      "absolute_residual_mw": 4328.422476190477,
+      "actual_mw": 17213.0,
+      "datetime": "2018-01-08T05:00:00",
+      "direction": "drop",
+      "prediction_mw": 21541.422476190477,
+      "residual_mw": -4328.422476190477,
+      "severity": "moderate",
+      "severity_score": 1.4338916075869463
+    },
+    {
+      "absolute_residual_mw": 4304.7524761904715,
+      "actual_mw": 16883.0,
+      "datetime": "2018-01-08T03:00:00",
+      "direction": "drop",
+      "prediction_mw": 21187.75247619047,
+      "residual_mw": -4304.7524761904715,
+      "severity": "moderate",
+      "severity_score": 1.4260503641458806
+    },
+    {
+      "absolute_residual_mw": 4240.437955545,
+      "actual_mw": 17089.0,
+      "datetime": "2018-07-20T18:00:00",
+      "direction": "drop",
+      "prediction_mw": 21329.437955545,
+      "residual_mw": -4240.437955545,
+      "severity": "moderate",
+      "severity_score": 1.4047446686166667
+    },
+    {
+      "absolute_residual_mw": 4233.537333333337,
+      "actual_mw": 17719.0,
+      "datetime": "2018-01-08T06:00:00",
+      "direction": "drop",
+      "prediction_mw": 21952.537333333337,
+      "residual_mw": -4233.537333333337,
+      "severity": "moderate",
+      "severity_score": 1.4024586754330395
+    },
+    {
+      "absolute_residual_mw": 4172.500642857136,
+      "actual_mw": 16910.0,
+      "datetime": "2018-01-08T02:00:00",
+      "direction": "drop",
+      "prediction_mw": 21082.500642857136,
+      "residual_mw": -4172.500642857136,
+      "severity": "moderate",
+      "severity_score": 1.3822388381343165
+    },
+    {
+      "absolute_residual_mw": 4168.228309523813,
+      "actual_mw": 17387.0,
+      "datetime": "2018-01-08T00:00:00",
+      "direction": "drop",
+      "prediction_mw": 21555.228309523813,
+      "residual_mw": -4168.228309523813,
+      "severity": "moderate",
+      "severity_score": 1.380823527372679
+    },
+    {
+      "absolute_residual_mw": 4163.167476190472,
+      "actual_mw": 17030.0,
+      "datetime": "2018-01-08T01:00:00",
+      "direction": "drop",
+      "prediction_mw": 21193.167476190472,
+      "residual_mw": -4163.167476190472,
+      "severity": "moderate",
+      "severity_score": 1.3791470074664105
+    }
+  ],
+  "total_scored_rows": 18163,
+  "validation_seen_by_calibration_model": false
+}

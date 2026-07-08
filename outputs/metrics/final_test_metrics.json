@@ -1,0 +1,20 @@
+{
+  "development_rows": 102915,
+  "predict_seconds": 0.038866124999913154,
+  "random_forest": {
+    "MAE": 705.9130124175043,
+    "MAPE": 4.721006253594745,
+    "RMSE": 945.2490956186225
+  },
+  "relative_mape_improvement_percent": 50.71823051694435,
+  "seasonal_naive": {
+    "MAE": 1444.9480812641084,
+    "MAPE": 9.57962001591268,
+    "RMSE": 1910.8413503741278
+  },
+  "selected_model": "Random Forest",
+  "test_rows": 18163,
+  "test_set_evaluated": true,
+  "train_seconds": 4.3122825829996145,
+  "training_scope": "train_plus_validation"
+}
