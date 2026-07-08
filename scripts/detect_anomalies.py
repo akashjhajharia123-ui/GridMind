@@ -124,7 +124,51 @@ def classify_severity(
         return "high"
 
     return "critical"
+def validate_prediction_artifact(
+    predictions_df,
+    test_df,
+):
+    required_columns = {
+        "Datetime",
+        TARGET_COLUMN,
+        "prediction",
+    }
 
+    missing_columns = (
+        required_columns
+        - set(predictions_df.columns)
+    )
+
+    if missing_columns:
+        raise ValueError(
+            "Final predictions artifact is missing "
+            "required columns: "
+            f"{sorted(missing_columns)}"
+        )
+
+    if len(predictions_df) != len(test_df):
+        raise ValueError(
+            "Final predictions row count does not "
+            "match reserved test split."
+        )
+
+    expected_datetimes = (
+        test_df["Datetime"]
+        .reset_index(drop=True)
+    )
+
+    artifact_datetimes = (
+        predictions_df["Datetime"]
+        .reset_index(drop=True)
+    )
+
+    if not expected_datetimes.equals(
+        artifact_datetimes
+    ):
+        raise ValueError(
+            "Final predictions timestamps do not "
+            "match reserved test split."
+        )
 
 def main():
     print("Loading data...")
@@ -221,47 +265,10 @@ def main():
         parse_dates=["Datetime"],
     )
 
-    required_columns = {
-        "Datetime",
-        TARGET_COLUMN,
-        "prediction",
-    }
-
-    missing_columns = (
-        required_columns
-        - set(predictions_df.columns)
-    )
-
-    if missing_columns:
-        raise ValueError(
-            "Final predictions artifact is missing "
-            "required columns: "
-            f"{sorted(missing_columns)}"
-        )
-
-    if len(predictions_df) != len(test_df):
-        raise ValueError(
-            "Final predictions row count does not "
-            "match reserved test split."
-        )
-
-    expected_datetimes = (
-        test_df["Datetime"]
-        .reset_index(drop=True)
-    )
-
-    artifact_datetimes = (
-        predictions_df["Datetime"]
-        .reset_index(drop=True)
-    )
-
-    if not expected_datetimes.equals(
-        artifact_datetimes
-    ):
-        raise ValueError(
-            "Final predictions timestamps do not "
-            "match reserved test split."
-        )
+    validate_prediction_artifact(
+    predictions_df,
+    test_df,
+)
 
     print(
         "Scoring final-test residuals with "
