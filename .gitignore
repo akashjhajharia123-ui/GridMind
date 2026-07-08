@@ -42,3 +42,8 @@ outputs/figures/*
 
 # Logs
 *.log
+# Local dashboard backup files
+dashboard/*.bak
+dashboard/*backup*.py
+dashboard/*before*.py
+dashboard/app_direction_mix_final.py
