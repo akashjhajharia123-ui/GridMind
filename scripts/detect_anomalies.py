@@ -2,9 +2,8 @@ from pathlib import Path
 import json
 import sys
 
-import joblib
-import numpy as np
 import pandas as pd
+from sklearn.ensemble import RandomForestRegressor
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -25,12 +24,6 @@ DATA_PATH = (
     / "data"
     / "raw"
     / "AEP_hourly.csv"
-)
-
-FINAL_MODEL_PATH = (
-    PROJECT_ROOT
-    / "models"
-    / "random_forest_final.joblib"
 )
 
 FINAL_PREDICTIONS_PATH = (
@@ -69,7 +62,6 @@ FEATURE_COLUMNS = [
 ]
 
 TARGET_COLUMN = "AEP_MW"
-
 THRESHOLD_QUANTILE = 0.99
 
 
@@ -89,6 +81,23 @@ def save_json(data, path):
             indent=2,
             sort_keys=True,
         )
+
+
+def create_calibration_model():
+    """
+    Same frozen Random Forest configuration used
+    during forecasting model selection.
+
+    This model is trained on train rows only.
+    Validation remains unseen for threshold fitting.
+    """
+    return RandomForestRegressor(
+        n_estimators=100,
+        max_depth=18,
+        min_samples_leaf=2,
+        random_state=42,
+        n_jobs=-1,
+    )
 
 
 def classify_direction(residual):
@@ -140,39 +149,43 @@ def main():
     )
 
     print(
-        f"Train rows: {len(train_df):,}"
+        f"Train rows for calibration model: "
+        f"{len(train_df):,}"
     )
 
     print(
-        f"Validation rows used for "
+        f"Unseen validation rows for "
         f"threshold fitting: "
         f"{len(validation_df):,}"
     )
 
     print(
-        f"Final test rows scored only: "
+        f"Final test rows for scoring only: "
         f"{len(test_df):,}"
     )
 
-    if not FINAL_MODEL_PATH.exists():
-        raise FileNotFoundError(
-            "Final model artifact not found: "
-            f"{FINAL_MODEL_PATH}"
-        )
+    print(
+        "\nTraining calibration model "
+        "on train rows only..."
+    )
 
-    print("\nLoading frozen final model...")
+    calibration_model = (
+        create_calibration_model()
+    )
 
-    model = joblib.load(
-        FINAL_MODEL_PATH
+    calibration_model.fit(
+        train_df[FEATURE_COLUMNS],
+        train_df[TARGET_COLUMN],
     )
 
     print(
-        "Generating validation predictions "
-        "for threshold calibration..."
+        "Predicting unseen validation period..."
     )
 
-    validation_predictions = model.predict(
-        validation_df[FEATURE_COLUMNS]
+    validation_predictions = (
+        calibration_model.predict(
+            validation_df[FEATURE_COLUMNS]
+        )
     )
 
     validation_residuals = (
@@ -195,14 +208,12 @@ def main():
 
     if not FINAL_PREDICTIONS_PATH.exists():
         raise FileNotFoundError(
-            "Final predictions artifact "
-            "not found: "
+            "Final predictions artifact not found: "
             f"{FINAL_PREDICTIONS_PATH}"
         )
 
     print(
-        "\nLoading previously saved "
-        "final-test predictions..."
+        "\nLoading frozen final-test predictions..."
     )
 
     predictions_df = pd.read_csv(
@@ -223,14 +234,38 @@ def main():
 
     if missing_columns:
         raise ValueError(
-            "Final predictions artifact is "
-            "missing required columns: "
+            "Final predictions artifact is missing "
+            "required columns: "
             f"{sorted(missing_columns)}"
         )
 
+    if len(predictions_df) != len(test_df):
+        raise ValueError(
+            "Final predictions row count does not "
+            "match reserved test split."
+        )
+
+    expected_datetimes = (
+        test_df["Datetime"]
+        .reset_index(drop=True)
+    )
+
+    artifact_datetimes = (
+        predictions_df["Datetime"]
+        .reset_index(drop=True)
+    )
+
+    if not expected_datetimes.equals(
+        artifact_datetimes
+    ):
+        raise ValueError(
+            "Final predictions timestamps do not "
+            "match reserved test split."
+        )
+
     print(
-        "Scoring final-test residuals "
-        "with frozen threshold..."
+        "Scoring final-test residuals with "
+        "frozen validation threshold..."
     )
 
     anomaly_result = detect_anomalies(
@@ -364,8 +399,12 @@ def main():
     summary = {
         "method":
             "absolute_forecast_residual_quantile",
+        "calibration_model":
+            "RandomForestRegressor",
+        "calibration_model_training_scope":
+            "train_only",
         "threshold_source":
-            "validation_residuals",
+            "unseen_validation_residuals",
         "threshold_quantile":
             THRESHOLD_QUANTILE,
         "threshold_mw":
@@ -387,6 +426,10 @@ def main():
         "top_anomalies":
             top_anomalies,
         "threshold_fit_on_final_test":
+            False,
+        "threshold_fit_on_training_rows":
+            False,
+        "validation_seen_by_calibration_model":
             False,
     }
 
@@ -462,8 +505,17 @@ def main():
     print(ANOMALY_SUMMARY_PATH)
 
     print(
-        "\nThreshold was fit on validation "
-        "residuals only; final test was "
+        "\nCalibration model was trained "
+        "on train rows only."
+    )
+
+    print(
+        "Threshold was fit on unseen "
+        "validation residuals only."
+    )
+
+    print(
+        "Final test predictions were "
         "used for scoring only."
     )
 
