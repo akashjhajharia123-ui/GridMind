@@ -43,6 +43,13 @@ data/raw/AEP_hourly.csv
 
 Records are parsed chronologically, sorted by timestamp, and deduplicated on `Datetime` before downstream feature engineering and evaluation.
 
+### Dataset Source
+
+This project uses the `AEP_hourly.csv` series from the **Hourly Energy Consumption** dataset published on Kaggle by Rob Mulla (`robikscube`). The dataset collection contains hourly power-consumption data sourced from PJM and measured in megawatts (MW).
+
+- Dataset: https://www.kaggle.com/datasets/robikscube/hourly-energy-consumption
+- Original data source: PJM Interconnection
+
 ## Model Performance
 
 ### Final Reserved-Test Results
