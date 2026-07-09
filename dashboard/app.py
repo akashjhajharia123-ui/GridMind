@@ -2436,7 +2436,8 @@ with methodology_tab:
                 HistGradientBoosting were compared
                 against a seasonal-naive benchmark.
             </div>
-            """
+            """,
+            unsafe_allow_html=True,
         )
 
     with m2:
@@ -2466,7 +2467,8 @@ with methodology_tab:
                 unseen validation data; q=0.99 residual
                 threshold is then frozen for test scoring.
             </div>
-            """
+            """,
+            unsafe_allow_html=True,
         )
 
     section(
