@@ -4,6 +4,13 @@
 
 The project combines machine-learning forecasting, expanding-window backtesting, residual-based anomaly detection, and a Streamlit dashboard into a reproducible workflow.
 
+## Live Demo
+
+Explore the deployed GridMind dashboard:
+
+**GridMind Energy Intelligence Dashboard**
+https://gridmind-ai.streamlit.app
+
 ## Key Features
 
 - Chronological train, validation, and reserved-test splitting
@@ -18,6 +25,21 @@ The project combines machine-learning forecasting, expanding-window backtesting,
 - Interactive Streamlit monitoring dashboard
 - Forecast diagnostics and feature-importance analysis
 - Automated test suite with **48 passing tests**
+
+## Data
+
+GridMind operates on hourly energy-demand observations with the following required schema:
+
+- `Datetime` — hourly timestamp
+- `AEP_MW` — electricity demand in megawatts
+
+The current pipeline reads the dataset from:
+
+```text
+data/raw/AEP_hourly.csv
+```
+
+Records are parsed chronologically, sorted by timestamp, and deduplicated on `Datetime` before downstream feature engineering and evaluation.
 
 ## Model Performance
 
@@ -135,6 +157,27 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
+
+## Reproducible Workflow
+
+From the project root, the main pipeline stages can be executed as:
+
+```bash
+python scripts/train_baseline.py
+python scripts/compare_models.py
+python scripts/backtest_models.py
+python scripts/select_model.py
+python scripts/final_evaluate.py
+python scripts/detect_anomalies.py
+```
+
+Optional model diagnostics can be generated with:
+
+```bash
+python scripts/analyze_model.py
+```
+
+The workflow separates baseline training, challenger comparison, temporal backtesting, model selection, reserved-test evaluation, and anomaly scoring into explicit stages.
 
 ## Run the Dashboard
 
