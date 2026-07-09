@@ -2607,7 +2607,8 @@ with methodology_tab:
 <div class="gm-integrity-label">Threshold Source</div>
 <div class="gm-integrity-value">{threshold_source_label}</div>
 <div class="gm-integrity-detail">q=0.99 estimated before final-test scoring</div>
-</div>"""
+</div>""",
+             unsafe_allow_html=True,
         )
 
     with meta2:
@@ -2629,7 +2630,8 @@ with methodology_tab:
 <div class="gm-integrity-label">Validation Role</div>
 <div class="gm-integrity-value{validation_class}">{validation_icon}{validation_status}</div>
 <div class="gm-integrity-detail">{validation_detail}</div>
-</div>"""
+</div>""",
+            unsafe_allow_html=True,
         )
 
     with meta3:
@@ -2664,4 +2666,5 @@ with methodology_tab:
 <div class="gm-integrity-detail">Evaluation boundary preserved</div>
 </div>"""
             ),
+            unsafe_allow_html=True,
         )
