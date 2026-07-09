@@ -1,5 +1,7 @@
 # ⚡ GridMind
 
+[![Tests](https://github.com/akashjhajharia123-ui/GridMind/actions/workflows/tests.yml/badge.svg)](https://github.com/akashjhajharia123-ui/GridMind/actions/workflows/tests.yml)
+
 **GridMind** is an end-to-end energy demand forecasting and residual anomaly intelligence system built for leakage-safe time-series evaluation, model selection, reserved-test assessment, and interactive operational diagnostics.
 
 The project combines machine-learning forecasting, expanding-window backtesting, residual-based anomaly detection, and a Streamlit dashboard into a reproducible workflow.
