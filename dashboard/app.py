@@ -65,6 +65,12 @@ FINAL_MODEL_PATH = (
     / "random_forest_final.joblib"
 )
 
+FEATURE_IMPORTANCE_PATH = (
+    PROJECT_ROOT
+    / "outputs"
+    / "metrics"
+    / "feature_importance.csv"
+)
 
 FEATURE_COLUMNS = [
     "hour",
@@ -786,6 +792,13 @@ model_comparison = pd.DataFrame()
 if MODEL_COMPARISON_PATH.exists():
     model_comparison = load_csv(
         MODEL_COMPARISON_PATH
+    )
+
+feature_importance = pd.DataFrame()
+
+if FEATURE_IMPORTANCE_PATH.exists():
+    feature_importance = load_csv(
+        FEATURE_IMPORTANCE_PATH
     )
 
 backtest = pd.DataFrame()
@@ -2211,73 +2224,61 @@ with diagnostics_tab:
             ),
         )
 
-        if FINAL_MODEL_PATH.exists():
-            try:
-                final_model = load_model(
-                    FINAL_MODEL_PATH
+        if (
+            not feature_importance.empty
+            and "feature" in feature_importance.columns
+            and "importance" in feature_importance.columns
+        ):
+            importance_df = (
+                feature_importance[
+                    ["feature", "importance"]
+                ]
+                .dropna()
+                .sort_values(
+                    "importance",
+                    ascending=True,
                 )
+            )
 
-                importances = getattr(
-                    final_model,
-                    "feature_importances_",
-                    None,
-                )
+            importance_chart = px.bar(
+                importance_df,
+                x="importance",
+                y="feature",
+                orientation="h",
+                text="importance",
+            )
 
-                if (
-                    importances is not None
-                    and len(importances)
-                    == len(FEATURE_COLUMNS)
-                ):
-                    importance_df = pd.DataFrame({
-                        "Feature": FEATURE_COLUMNS,
-                        "Importance": importances,
-                    }).sort_values(
-                        "Importance",
-                        ascending=True,
-                    )
+            importance_chart.update_traces(
+                marker_color="#35dfa5",
+                texttemplate="%{text:.3f}",
+                textposition="outside",
+                cliponaxis=False,
+            )
 
-                    importance_chart = px.bar(
-                        importance_df,
-                        x="Importance",
-                        y="Feature",
-                        orientation="h",
-                        text="Importance",
-                    )
+            importance_chart.update_layout(
+                showlegend=False,
+                xaxis_title="Importance",
+                yaxis_title=None,
+            )
 
-                    importance_chart.update_traces(
-                        marker_color="#35dfa5",
-                        texttemplate="%{text:.3f}",
-                        textposition="outside",
-                        cliponaxis=False,
-                    )
+            apply_chart_theme(
+                importance_chart,
+                height=390,
+            )
 
-                    importance_chart.update_layout(
-                        showlegend=False,
-                    )
+            st.plotly_chart(
+                importance_chart,
+                width="stretch",
+                config={
+                    "displaylogo": False,
+                    "responsive": True,
+                },
+            )
 
-                    apply_chart_theme(
-                        importance_chart,
-                        height=390,
-                    )
-
-                    st.plotly_chart(
-                        importance_chart,
-                        width="stretch",
-                    )
-                else:
-                    st.info(
-                        "Feature importance metadata "
-                        "does not match dashboard features."
-                    )
-
-            except Exception as error:
-                st.warning(
-                    "Could not load feature importance: "
-                    f"{error}"
-                )
         else:
             st.info(
-                "Final model artifact is unavailable."
+                "Feature importance artifact is "
+                "not available in the expected schema."
             )
 
     if not backtest.empty:
